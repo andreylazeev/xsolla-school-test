@@ -33,6 +33,7 @@ export const EventBlock: React.FC = () => {
     setCurrentMonth(value)
   }
 
+  // fetch data and setState
   useEffect(() => {
     axios
       .get<Items[]>(
@@ -49,6 +50,7 @@ export const EventBlock: React.FC = () => {
     setCities(uniqueArray.map((item) => ({ title: item, value: item })))
   }, [items])
 
+  // set options for "month" select
   useEffect(() => {
     const uniqueArray: string[] = Array.from(new Set(items.map((item) => item.date.split('.')[1])))
     const monthsArray: OptionsItems[] = []
