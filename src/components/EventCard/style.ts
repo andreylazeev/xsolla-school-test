@@ -23,7 +23,13 @@ export const Card = styled.div<CardProps>`
 `
 
 export const Flag = styled(Bookmark)<FlagProps>`
+  cursor: pointer;
+  transition: all 0.2s ease-out;
   fill: ${(p) => (p.favorite === 'true' ? 'white' : 'transparent')};
+
+  &:hover {
+    ${(p) => p.favorite !== 'true' && `fill: rgba(255, 255, 255, 0.5);`}
+  }
 `
 
 export const CardHeading = styled.div`
