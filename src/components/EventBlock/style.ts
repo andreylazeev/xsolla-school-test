@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
 
 export const SelectsBlock = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, max-content);
+  grid-template-columns: repeat(3, max-content);
   grid-column-gap: 20px;
 `
 

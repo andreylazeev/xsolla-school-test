@@ -22,7 +22,16 @@ const allMonths: OptionsItems[] = [
 export const EventBlock: React.FC = () => {
   const [items, setItems] = useState<Items[]>([])
   const [cities, setCities] = useState<OptionsItems[]>([])
+  const [currentCity, setCurrentCity] = useState<string>('')
+  const [currentMonth, setCurrentMonth] = useState<string>('')
   const [months, setMonths] = useState<OptionsItems[]>([])
+
+  const handleCity = (value: string) => {
+    setCurrentCity(value)
+  }
+  const handleMonth = (value: string) => {
+    setCurrentMonth(value)
+  }
 
   useEffect(() => {
     axios
@@ -58,8 +67,8 @@ export const EventBlock: React.FC = () => {
     <S.Wrapper>
       <S.Heading>Event Listing</S.Heading>
       <S.SelectsBlock>
-        {cities && <SelectField title='City:' options={cities} />}
-        <SelectField title='Month:' options={months} />
+        {cities && <SelectField title='City:' options={cities} onChangeSelect={handleCity} />}
+        <SelectField title='Month:' options={months} onChangeSelect={handleMonth} />
       </S.SelectsBlock>
     </S.Wrapper>
   )
