@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Items, OptionsItems } from '../../interfaces'
+import { EventCard } from '../EventCard/EventCard'
 import { SelectField } from '../SelectField/SelectField'
 import * as S from './style'
 
@@ -21,6 +22,7 @@ const allMonths: OptionsItems[] = [
 
 export const EventBlock: React.FC = () => {
   const [items, setItems] = useState<Items[]>([])
+  const [filteredItems, setFiltertdItems] = useState<Items[]>([])
   const [cities, setCities] = useState<OptionsItems[]>([])
   const [currentCity, setCurrentCity] = useState<string>('')
   const [currentMonth, setCurrentMonth] = useState<string>('')
@@ -50,6 +52,17 @@ export const EventBlock: React.FC = () => {
     setCities(uniqueArray.map((item) => ({ title: item, value: item })))
   }, [items])
 
+  // apply filters
+  useEffect(() => {
+    setFiltertdItems(
+      items.filter(
+        (item) =>
+          item.city === (currentCity !== '' ? currentCity : item.city) &&
+          item.date.split('.')[1] === (currentMonth !== '' ? currentMonth : item.date.split('.')[1])
+      )
+    )
+  }, [items, currentCity, currentMonth])
+
   // set options for "month" select
   useEffect(() => {
     const uniqueArray: string[] = Array.from(new Set(items.map((item) => item.date.split('.')[1])))
@@ -72,6 +85,9 @@ export const EventBlock: React.FC = () => {
         {cities && <SelectField title='City:' options={cities} onChangeSelect={handleCity} />}
         <SelectField title='Month:' options={months} onChangeSelect={handleMonth} />
       </S.SelectsBlock>
+      <S.EventCards>
+        {filteredItems && filteredItems.map((item) => <EventCard {...item} />)}
+      </S.EventCards>
     </S.Wrapper>
   )
 }

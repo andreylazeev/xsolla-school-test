@@ -7,9 +7,9 @@ export const Wrapper = styled.div`
   background: #ffffff;
   box-shadow: 0px 16px 32px rgba(0, 0, 0, 0.12);
   border-radius: 16px;
+  height: 100%;
   display: grid;
   grid-row-gap: 40px;
-  grid-template-rows: repeat(3, max-content);
 `
 
 export const SelectsBlock = styled.div`
@@ -25,4 +25,11 @@ export const Heading = styled.h1`
   font-size: 48px;
   line-height: 66px;
   color: #2e282c;
+`
+
+export const EventCards = styled.div`
+  display: grid;
+  height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 40px;
 `
