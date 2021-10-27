@@ -22,11 +22,13 @@ const allMonths: OptionsItems[] = [
 
 export const EventBlock: React.FC = () => {
   const [items, setItems] = useState<Items[]>([])
+  const [favorites, setFavorites] = useState<string[]>([])
   const [filteredItems, setFiltertdItems] = useState<Items[]>([])
   const [cities, setCities] = useState<OptionsItems[]>([])
   const [currentCity, setCurrentCity] = useState<string>('')
   const [currentMonth, setCurrentMonth] = useState<string>('')
   const [months, setMonths] = useState<OptionsItems[]>([])
+  const [showFavorites, setShowFavorites] = useState<boolean>(false)
 
   const handleCity = (value: string) => {
     setCurrentCity(value)
@@ -35,6 +37,24 @@ export const EventBlock: React.FC = () => {
     setCurrentMonth(value)
   }
 
+  const handleFavorite = (id: string) => {
+    if (favorites.some((el) => el === id)) {
+      setFavorites((prev) => prev.filter((item) => item !== id))
+    } else {
+      setFavorites((prev) => [...prev, id])
+    }
+  }
+
+  //set favorites to localStorage
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('favorites') || '[]')
+    setFavorites(saved)
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+  }, [favorites])
+
   // fetch data and setState
   useEffect(() => {
     axios
@@ -42,7 +62,7 @@ export const EventBlock: React.FC = () => {
         'https://raw.githubusercontent.com/xsolla/xsolla-frontend-school-2021/main/events.json'
       )
       .then(({ data }) => {
-        setItems(data.map((item) => ({ ...item, isFavorite: false })))
+        setItems(data.map((item) => ({ ...item })))
       })
   }, [])
 
@@ -58,10 +78,12 @@ export const EventBlock: React.FC = () => {
       items.filter(
         (item) =>
           item.city === (currentCity !== '' ? currentCity : item.city) &&
-          item.date.split('.')[1] === (currentMonth !== '' ? currentMonth : item.date.split('.')[1])
+          item.date.split('.')[1] ===
+            (currentMonth !== '' ? currentMonth : item.date.split('.')[1]) &&
+          item.id === (!showFavorites ? item.id : favorites.find((el) => el === item.id))
       )
     )
-  }, [items, currentCity, currentMonth])
+  }, [items, currentCity, currentMonth, showFavorites, favorites])
 
   // set options for "month" select
   useEffect(() => {
@@ -84,9 +106,27 @@ export const EventBlock: React.FC = () => {
       <S.SelectsBlock>
         {cities && <SelectField title='City:' options={cities} onChangeSelect={handleCity} />}
         <SelectField title='Month:' options={months} onChangeSelect={handleMonth} />
+        <S.SelectCheck>
+          <input
+            type='checkbox'
+            id='fav-show'
+            checked={showFavorites}
+            onChange={(e) => setShowFavorites(e.target.checked)}
+          />
+          <label htmlFor='fav-show'>Show favorites only</label>
+        </S.SelectCheck>
       </S.SelectsBlock>
       <S.EventCards>
-        {filteredItems && filteredItems.map((item) => <EventCard {...item} />)}
+        {filteredItems &&
+          filteredItems.map((item) => (
+            <EventCard
+              {...item}
+              key={item.id}
+              onFavorite={handleFavorite}
+              isFavorite={favorites.find((e) => e === item.id) === item.id}
+            />
+          ))}
+        {filteredItems.length === 0 && <p>No data to display</p>}
       </S.EventCards>
     </S.Wrapper>
   )

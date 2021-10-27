@@ -57,15 +57,4 @@ export default createGlobalStyle`
           url(${AvenirRegularWoff2}) format('woff2');
         font-style: normal;
     }
-
-    body {
-      font-family: 'Avenir Regular';
-      background: #F0F3FF;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 `
